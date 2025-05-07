@@ -1,0 +1,833 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+#:import MDTextField kivymd.uix.textfield
+#:import MDCard kivymd.uix.card
+#:import MDTopAppBar kivymd.uix.toolbar.MDTopAppBar
+#:import MDRaisedButton kivymd.uix.button.MDRaisedButton
+#:import MDNavigationDrawer kivymd.uix.navigationdrawer.MDNavigationDrawer
+#:import MDNavigationLayout kivymd.uix.navigationdrawer.MDNavigationLayout
+#:import os os
+#:import hex kivy.utils.get_hex_from_color
+#:import rgba kivy.utils.get_color_from_hex
+
+
+
+<LoginScreen>:
+    id: login_screen
+    MDScreen:
+        md_bg_color: "#343333"
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: dp(20)
+            spacing: dp(20)
+
+            Image:
+                id: logo_image
+                source: "assets/logo.png" if os.path.exists("assets/logo.png") else ""
+                size_hint: (0.8, 0.3)
+                pos_hint: {"center_x": 0.5}
+                opacity: 0
+
+            MDCard:
+                size_hint: (1, None)
+                height: dp(300)
+                padding: dp(20)
+                spacing: dp(20)
+                elevation: 10
+                radius: [15,]
+
+                BoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(15)
+
+                    MDTextField:
+                        id: username
+                        hint_text: "Логин"
+                        icon_left: "account"
+                        mode: "fill"
+                        size_hint_x: 0.9
+                        pos_hint: {"center_x": 0.5}
+
+                    MDTextField:
+                        id: password
+                        hint_text: "Пароль"
+                        icon_left: "lock"
+                        password: True
+                        mode: "fill"
+                        size_hint_x: 0.9
+                        pos_hint: {"center_x": 0.5}
+
+                    MDLabel:
+                        id: error_label
+                        text: root.error_message
+                        theme_text_color: "Error"
+                        opacity: 0
+                        size_hint_y: None
+                        height: dp(20)
+
+                    MDRaisedButton:
+                        id: login_btn
+                        text: "ВОЙТИ"
+                        size_hint: (0.7, None)
+                        height: dp(50)
+                        pos_hint: {"center_x": 0.5}
+                        on_release: root.on_login()
+                        theme_text_color: "Custom"
+                        text_color: "white" if app.theme_cls.theme_style == "Dark" else "black"
+                        md_bg_color: app.theme_cls.primaryColor
+                        font_size: "16sp"
+
+<MainScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            id: screen_manager
+
+            MDScreen:
+                BoxLayout:
+                    orientation: "vertical"
+
+                    MDTopAppBar:
+                        title: "Главная"
+                        left_action_items: [["menu", lambda x: root.open_menu()]]
+                        elevation: 10
+                        md_bg_color: app.theme_cls.primaryColor
+                        specific_text_color: 1, 1, 1, 1
+
+                    ScrollView:
+                        BoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: dp(20)
+                            spacing: dp(20)
+
+                            MDLabel:
+                                id: welcome_label
+                                text: ""
+                                font_size: "24sp"
+                                size_hint_y: None
+                                height: dp(100)
+                                halign: "center"
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(200)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+
+                                    MDIcon:
+                                        icon: "account-circle"
+                                        size_hint: (1, 0.5)
+                                        font_size: "50sp"
+                                        halign: "center"
+                                        theme_text_color: "Primary"
+
+                                    MDLabel:
+                                        text: "Профиль"
+                                        font_size: "18sp"
+                                        halign: "center"
+
+                                    MDRaisedButton:
+                                        text: "Перейти"
+                                        pos_hint: {"center_x": 0.5}
+                                        md_bg_color: app.theme_cls.primaryColor
+                                        on_release:
+                                            root.manager.current = "profile"
+                                            root.ids.nav_drawer.set_state("close")
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(200)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+
+                                    MDIcon:
+                                        icon: "cog"
+                                        size_hint: (1, 0.5)
+                                        font_size: "50sp"
+                                        halign: "center"
+                                        theme_text_color: "Primary"
+
+                                    MDLabel:
+                                        text: "Настройки"
+                                        font_size: "18sp"
+                                        halign: "center"
+
+                                    MDRaisedButton:
+                                        text: "Перейти"
+                                        pos_hint: {"center_x": 0.5}
+                                        md_bg_color: app.theme_cls.primaryColor
+                                        on_release:
+                                            root.manager.current = "settings"
+                                            root.ids.nav_drawer.set_state("close")
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(200)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+                                    padding: dp(15)
+                                    spacing: dp(10)
+
+                                    MDIcon:
+                                        icon: "handshake"
+                                        size_hint_y: 0.6
+                                        font_size: "40sp"
+                                        halign: "center"
+                                        theme_text_color: "Primary"
+
+                                    MDLabel:
+                                        text: "Партнеры"
+                                        halign: "center"
+                                        font_style: "H6"
+
+                                    MDRaisedButton:
+                                        text: "Перейти"
+                                        pos_hint: {"center_x": 0.5}
+                                        md_bg_color: app.theme_cls.primaryColor
+                                        on_release:
+                                            root.manager.current = "partners"
+                                            root.ids.nav_drawer.set_state("close")
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(200)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+                                    padding: dp(15)
+                                    spacing: dp(10)
+
+                                    MDIcon:
+                                        icon: "calendar"
+                                        size_hint_y: 0.6
+                                        font_size: "40sp"
+                                        halign: "center"
+                                        theme_text_color: "Primary"
+
+                                    MDLabel:
+                                        text: "Мероприятия"
+                                        halign: "center"
+                                        font_style: "H6"
+
+                                    MDRaisedButton:
+                                        text: "Перейти"
+                                        pos_hint: {"center_x": 0.5}
+                                        md_bg_color: app.theme_cls.primaryColor
+                                        on_release:
+                                            root.manager.current = "events"
+                                            root.ids.nav_drawer.set_state("close")
+
+
+
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(200)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+
+                                    MDIcon:
+                                        icon: "information"
+                                        size_hint: (1, 0.5)
+                                        font_size: "50sp"
+                                        halign: "center"
+                                        theme_text_color: "Primary"
+
+                                    MDLabel:
+                                        text: "О проекте"
+                                        font_size: "18sp"
+                                        halign: "center"
+
+                                    MDRaisedButton:
+                                        text: "Перейти"
+                                        pos_hint: {"center_x": 0.5}
+                                        md_bg_color: app.theme_cls.primaryColor
+                                        on_release:
+                                            root.manager.current = "about"
+                                            root.ids.nav_drawer.set_state("close")
+
+
+
+        MDNavigationDrawer:
+            id: nav_drawer
+            radius: (0, 16, 16, 0)
+            md_bg_color: app.theme_cls.primaryColor
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: "8dp"
+                padding: "8dp"
+
+                BoxLayout:
+                    size_hint_y: None
+                    height: "120dp"
+
+                    Image:
+                        source: "assets/menu_header.png" if os.path.exists("assets/menu_header.png") else ""
+                        size_hint: (1, 1)
+                        color: [1, 1, 1, 0.8]
+                        allow_stretch: True
+                        keep_ratio: True
+
+                MDLabel:
+                    text: "Меню приложения"
+                    font_style: "H5"
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    padding: "16dp"
+                    halign: "center"
+                    theme_text_color: "Custom"
+                    text_color: [1, 1, 1, 1]
+
+                ScrollView:
+                    MDList:
+                        OneLineIconListItem:
+                            text: "Главная"
+                            icon: "home"
+                            theme_text_color: "Custom"
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.current = "main"
+                                nav_drawer.set_state("close")
+
+                        OneLineIconListItem:
+                            text: "Профиль"
+                            icon: "account"
+                            theme_text_color: "Custom"
+                            md_bg_color: app.theme_cls.primaryColor
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.current = "profile"
+                                nav_drawer.set_state("close")
+
+                        OneLineIconListItem:
+                            text: "Партнеры"
+                            icon: "handshake"
+                            theme_text_color: "Custom"
+                            md_bg_color: app.theme_cls.primaryColor
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.current = "partners"
+                                nav_drawer.set_state("close")
+
+                        OneLineIconListItem:
+                            text: "Мероприятия"
+                            icon: "calendar"
+                            theme_text_color: "Custom"
+                            md_bg_color: app.theme_cls.primaryColor
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.current = "events"
+                                nav_drawer.set_state("close")
+
+                        OneLineIconListItem:
+                            text: "Настройки"
+                            icon: "cog"
+                            theme_text_color: "Custom"
+                            md_bg_color: app.theme_cls.primaryColor
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.current = "settings"
+                                nav_drawer.set_state("close")
+
+                        OneLineIconListItem:
+                            text: "О проекте"
+                            icon: "information"
+                            theme_text_color: "Custom"
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.current = "about"
+                                nav_drawer.set_state("close")
+
+                        OneLineIconListItem:
+                            text: "Выйти"
+                            icon: "logout"
+                            theme_text_color: "Custom"
+                            text_color: [1, 1, 1, 1]
+                            icon_color: [1, 1, 1, 1]
+                            on_release:
+                                root.manager.transition.direction = "right"
+                                root.manager.current = "login"
+                                nav_drawer.set_state("close")
+
+
+
+<ProfileScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation: "vertical"
+
+                    MDTopAppBar:
+                        title: "Профиль"
+                        left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'main')]]
+                        elevation: 10
+                        md_bg_color: app.theme_cls.primaryColor
+                        specific_text_color: [1, 1, 1, 1]
+
+                    ScrollView:
+                        MDBoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: dp(20)
+                            spacing: dp(20)
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(400)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+                                    spacing: dp(20)
+
+                                    MDIcon:
+                                        icon: "account-circle"
+                                        size_hint: (1, 0.3)
+                                        font_size: "50sp"
+                                        halign: "center"
+                                        theme_text_color: "Primary"
+
+                                    MDTextField:
+                                        id: username
+                                        hint_text: "Имя пользователя"
+                                        readonly: True
+                                        icon_left: "account"
+                                        mode: "fill"
+
+                                    MDTextField:
+                                        id: full_name
+                                        hint_text: "Полное имя"
+                                        icon_left: "card-account-details"
+                                        mode: "fill"
+
+                                    MDTextField:
+                                        id: email
+                                        hint_text: "Email"
+                                        icon_left: "email"
+                                        mode: "fill"
+
+                                    MDRaisedButton:
+                                        text: "Сохранить"
+                                        pos_hint: {"center_x": 0.5}
+                                        on_release: root.save_profile()
+                                        md_bg_color: app.theme_cls.primaryColor
+<SettingsScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation: "vertical"
+
+                    MDTopAppBar:
+                        title: "Настройки"
+                        left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'main')]]
+                        elevation: 10
+                        md_bg_color: app.theme_cls.primaryColor
+
+                    ScrollView:
+                        MDBoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: dp(20)
+                            spacing: dp(20)
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(300)
+                                padding: dp(20)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+                                    spacing: dp(20)
+
+                                    MDLabel:
+                                        text: "Настройки приложения"
+                                        font_style: "H6"
+                                        halign: "center"
+                                        size_hint_y: None
+                                        height: self.texture_size[1]
+
+                                    MDBoxLayout:
+                                        orientation: "horizontal"
+                                        spacing: dp(10)
+                                        size_hint_y: None
+                                        height: dp(48)
+
+                                        MDIcon:
+                                            icon: "weather-night" if app.theme_cls.theme_style == "Light" else "weather-sunny"
+                                            size_hint_x: None
+                                            width: dp(48)
+                                            theme_text_color: "Primary"
+
+                                        MDSwitch:
+                                            id: dark_mode
+                                            active: app.theme_cls.theme_style == "Dark"
+                                            pos_hint: {"center_x": 0.5}
+                                            on_active: app.toggle_theme(self.active)
+<AboutScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation: "vertical"
+
+                    MDTopAppBar:
+                        title: "О проекте"
+                        left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'main')]]
+                        elevation: 10
+                        md_bg_color: app.theme_cls.primaryColor
+                        specific_text_color: [1, 1, 1, 1]
+
+                    ScrollView:
+                        MDBoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height + dp(40)
+                            padding: dp(15)
+                            spacing: dp(15)
+
+                            # Карточка с описанием проекта
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(280)
+                                padding: dp(15)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+                                    spacing: dp(10)
+
+                                    MDLabel:
+                                        text: "TechConnect"
+                                        font_style: "H5"
+                                        halign: "center"
+                                        size_hint_y: None
+                                        height: dp(30)
+                                        bold: True
+
+                                    MDLabel:
+                                        text: "Версия 1.0.0"
+                                        halign: "center"
+                                        size_hint_y: None
+                                        height: dp(20)
+                                        font_style: "Caption"
+
+                                    ScrollView:
+                                        MDLabel:
+                                            text: "Проект Студенческого совета ВШЭКН, созданный для помощи студентам в трудоустройстве и развитии профессиональных навыков через сотрудничество с компаниями."
+                                            halign: "center"
+                                            size_hint_y: None
+                                            height: self.texture_size[1]
+                                            padding: [dp(5), 0]
+                                            text_size: self.width, None
+
+                                    MDSeparator:
+                                        height: "1dp"
+
+                            # Карточка с первым руководителем
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(150)
+                                padding: dp(15)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "horizontal"
+                                    spacing: dp(15)
+
+                                    FitImage:
+                                        source: "assets/andrey.jpg" if os.path.exists("assets/andrey.jpg") else ""
+                                        size_hint: (0.3, 1)
+                                        radius: [dp(25),]
+                                        allow_stretch: True
+                                        keep_ratio: True
+
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing: dp(5)
+
+                                        MDLabel:
+                                            text: "Вовк Андрей"
+                                            font_style: "H6"
+                                            size_hint_y: None
+                                            height: dp(25)
+
+                                        MDLabel:
+                                            text: "Руководитель проекта"
+                                            theme_text_color: "Secondary"
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            font_size: '14sp'
+
+                                        MDFlatButton:
+                                            text: "Ссылка на Telegram"
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            font_size: '12sp'
+                                            theme_text_color: "Custom"
+                                            text_color: app.theme_cls.primaryColor
+                                            on_release: root.open_link("mailto:https://t.me/Vegariz")
+
+                            # Карточка со вторым руководителем
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(150)
+                                padding: dp(15)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "horizontal"
+                                    spacing: dp(15)
+
+                                    FitImage:
+                                        source: "assets/nikita.jpg" if os.path.exists("assets/nikita.jpg") else ""
+                                        size_hint: (0.3, 1)
+                                        radius: [dp(25),]
+                                        allow_stretch: True
+                                        keep_ratio: True
+
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing: dp(5)
+
+                                        MDLabel:
+                                            text: "Фрумкин Никита"
+                                            font_style: "H6"
+                                            size_hint_y: None
+                                            height: dp(25)
+
+                                        MDLabel:
+                                            text: "Заместитель Руководителя"
+                                            theme_text_color: "Secondary"
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            font_size: '14sp'
+
+                                        MDFlatButton:
+                                            text: "Ссылка на Telegram"
+                                            size_hint_y: None
+                                            height: dp(20)
+                                            font_size: '12sp'
+                                            theme_text_color: "Custom"
+                                            text_color: app.theme_cls.primaryColor
+                                            on_release: root.open_link("mailto:https://t.me/NikCLB")
+                            MDLabel:
+                                text: "Официальные ресурсы:"
+                                font_style: "H6"
+                                size_hint_y: None
+                                height: dp(30)
+                                halign: "center"
+
+                            BoxLayout:
+                                orientation: "horizontal"
+                                spacing: dp(10)
+                                size_hint_y: None
+                                height: dp(50)
+
+
+
+                                MDRaisedButton:
+                                    text: "Группа ВКонтакте"
+                                    icon: "vk"
+                                    md_bg_color: app.theme_cls.primaryColor
+                                    on_release: root.open_link("https://vk.com/techconnectsusu?from=groups")
+                                    size_hint_x: 0.5
+
+
+                            BoxLayout:
+                                orientation: "horizontal"
+                                spacing: dp(10)
+                                size_hint_y: None
+                                height: dp(50)
+
+
+
+                                MDRaisedButton:
+                                    text: "Положение о проекте"
+                                    icon: "file-document"
+                                    md_bg_color: app.theme_cls.primaryColor
+                                    on_release: root.open_document("position")
+                                    size_hint_x: 0.5
+
+
+                            # Подпись
+                            MDLabel:
+                                text: "© 2025 TechConnect"
+                                theme_text_color: "Secondary"
+                                halign: "center"
+                                size_hint_y: None
+                                height: dp(30)
+                                font_size: '12sp'
+<PartnersScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation: "vertical"
+
+                    MDTopAppBar:
+                        title: "Партнеры"
+                        left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'main')]]
+                        elevation: 10
+                        md_bg_color: app.theme_cls.primaryColor
+
+                    ScrollView:
+                        MDBoxLayout:
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: dp(20)
+                            spacing: dp(20)
+
+                            MDLabel:
+                                text: "Наши партнеры"
+                                font_style: "H5"
+                                halign: "center"
+                                size_hint_y: None
+                                height: dp(50)
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(120)
+                                padding: dp(15)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "horizontal"
+                                    spacing: dp(15)
+
+                                    FitImage:
+                                        source: "assets/partner1.png"
+                                        size_hint: (0.3, 1)
+                                        radius: [dp(10),]
+                                        allow_stretch: True
+                                        keep_ratio: True
+
+                                    BoxLayout:
+                                        orientation: "vertical"
+                                        spacing: dp(5)
+
+                                        MDLabel:
+                                            text: "T-Банк"
+                                            font_style: "H6"
+                                            size_hint_y: None
+                                            height: dp(25)
+
+                                        MDFlatButton:
+                                            text: "education.tbank.ru"
+                                            theme_text_color: "Custom"
+                                            text_color: app.theme_cls.primaryColor
+                                            on_release: root.open_link("https://education.tbank.ru/")
+<EventsScreen>:
+    MDNavigationLayout:
+        ScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation: "vertical"
+                    spacing: dp(10)
+
+                    MDTopAppBar:
+                        title: "Мероприятия"
+                        left_action_items: [["arrow-left", lambda x: setattr(root.manager, 'current', 'main')]]
+                        elevation: 10
+                        md_bg_color: app.theme_cls.primary_dark
+                        specific_text_color: 1, 1, 1, 1  # Белый текст
+
+                    ScrollView:
+                        MDBoxLayout:
+                            id: events_container
+                            orientation: "vertical"
+                            size_hint_y: None
+                            height: self.minimum_height
+                            padding: [dp(20), dp(10), dp(20), dp(10)]
+                            spacing: dp(15)
+
+                            MDLabel:
+                                text: "Предстоящие мероприятия"
+                                font_style: "H5"
+                                halign: "center"
+                                size_hint_y: None
+                                height: dp(50)
+
+                            MDCard:
+                                size_hint: (1, None)
+                                height: dp(250)
+                                padding: dp(15)
+                                elevation: 5
+                                radius: [15,]
+
+                                BoxLayout:
+                                    orientation: "vertical"
+                                    spacing: dp(10)
+
+                                    MDLabel:
+                                        text: "IT смена TechConnect"
+                                        font_style: "H6"
+                                        size_hint_y: None
+                                        height: dp(30)
+
+                                    MDLabel:
+                                        text: "3-12 августа 2025"
+                                        theme_text_color: "Secondary"
+                                        size_hint_y: None
+                                        height: dp(25)
+
+                                    MDLabel:
+                                        text: "Ежегодная летняя смена для IT-специалистов и студентов"
+                                        size_hint_y: None
+                                        height: dp(60)
+                                        text_size: self.width, None
+
+                                    BoxLayout:
+                                        orientation: "horizontal"
+                                        spacing: dp(10)
+                                        size_hint_y: None
+                                        height: dp(50)
+
+                                        MDFlatButton:
+                                            text: "Подробнее"
+                                            theme_text_color: "Custom"
+                                            text_color: app.theme_cls.primaryColor
+                                            md_bg_color: app.theme_cls.primaryColor
+
+                                        MDRaisedButton:
+                                            text: "Зарегистрироваться"
+                                            on_release: root.register_for_event(1)
